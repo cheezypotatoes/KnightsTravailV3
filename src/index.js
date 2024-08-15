@@ -100,17 +100,11 @@ function CreateControllerButtons() {
 
   ShowLocationToggleButton.addEventListener('click', () => {
     const tiles = document.getElementsByClassName('tiles');
-    if (showedTilesCoord) {
-      for (let i = 0; i < tiles.length; i += 1) {
-        tiles[i].innerText = '';
-      }
-      showedTilesCoord = false;
-    } else {
-      for (let i = 0; i < tiles.length; i += 1) {
-        tiles[i].innerText = tiles[i].tileCoords;
-      }
-      showedTilesCoord = true;
+    const showCoordinates = !showedTilesCoord; // TODO: CANNOT UNDERSTAND HOW THIS TOGGLE WORKS
+    for (let i = 0; i < tiles.length; i += 1) {
+      tiles[i].innerText = showCoordinates ? tiles[i].tileCoords : '';
     }
+    showedTilesCoord = showCoordinates;
   });
 
   controller.appendChild(FindPathButton);
