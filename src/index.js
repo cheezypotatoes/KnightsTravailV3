@@ -2,22 +2,27 @@ import './index.css';
 
 let knightPlaced = false;
 let targetPlaced = false;
+let showedTilesCoord = false;
 let knightLocation = '';
 let targetLocation = '';
 
 function CreateTileEvents(tile) {
   tile.addEventListener('click', (event) => {
     const { target } = event;
-    const name = target.querySelector('.tilesText');
+    const setStyle = (element, color, backgroundColor) => {
+      Object.assign(element.style, {
+        color,
+        backgroundColor,
+      });
+    };
+
     if (!knightPlaced) {
-      knightLocation = name.innerText;
-      name.innerText = 'X';
-      name.style.color = 'green';
+      knightLocation = target.tileCoords;
+      setStyle(target, 'white', '#3498db');
       knightPlaced = true;
     } else if (!targetPlaced) {
-      targetLocation = name.innerText;
-      name.innerText = 'O';
-      name.style.color = 'blue';
+      targetLocation = target.tileCoords;
+      setStyle(target, 'white', '#e74c3c');
       targetPlaced = true;
     }
   });
@@ -41,10 +46,6 @@ function createPixel(number) {
   const startWhite = new Set([0, 16, 32, 48]);
 
   for (let i = 0; i < number * number; i += 1) {
-    const x = i % number;
-    const y = Math.floor(i / number);
-    const TileName = `[${y}, ${x}]`;
-
     if (startBlack.has(i)) {
       IsWhite = false;
     } else if (startWhite.has(i)) {
@@ -52,15 +53,14 @@ function createPixel(number) {
     }
 
     const tile = document.createElement('div');
-    tile.color = IsWhite;
+    // adds attributes
+    Object.assign(tile, {
+      color: IsWhite,
+      tileCoords: `[${i % number}, ${Math.floor(i / number)}]`,
+    });
+    tile.style.color = IsWhite ? 'black' : 'white'; // adjust depending on the tile color
 
-    CreateTileEvents(tile); // Add events
-
-    tile.appendChild(Object.assign(document.createElement('p'), {
-      className: 'tilesText',
-      innerText: TileName,
-      style: 'pointer-events: none;',
-    }));
+    CreateTileEvents(tile); // Add events Listeners
 
     tile.classList.add('tiles');
     tile.style.backgroundColor = IsWhite ? ('white') : ('black');
@@ -77,21 +77,50 @@ function FindShortestPathFunction() {
   }
 }
 
-function Initialization() {
-  createPixel(8);
+function CreateControllerButtons() {
   const controller = document.getElementById('controls');
-  const button = document.createElement('button');
+  // Find Path
+  const FindPathButton = document.createElement('button');
 
-  Object.assign(button, {
+  Object.assign(FindPathButton, {
     className: 'findPathButton',
     innerText: 'Find Path',
   });
 
-  button.addEventListener('click', () => {
+  FindPathButton.addEventListener('click', () => {
     FindShortestPathFunction();
   });
 
-  controller.appendChild(button);
+  // Show coords
+  const ShowLocationToggleButton = document.createElement('button');
+  Object.assign(ShowLocationToggleButton, {
+    className: 'findPathButton',
+    innerText: 'Show Coords',
+  });
+
+  ShowLocationToggleButton.addEventListener('click', () => {
+    const tiles = document.getElementsByClassName('tiles');
+    if (showedTilesCoord) {
+      for (let i = 0; i < tiles.length; i += 1) {
+        tiles[i].innerText = '';
+      }
+      showedTilesCoord = false;
+    } else {
+      for (let i = 0; i < tiles.length; i += 1) {
+        tiles[i].innerText = tiles[i].tileCoords;
+      }
+      showedTilesCoord = true;
+    }
+  });
+
+  controller.appendChild(FindPathButton);
+  controller.appendChild(ShowLocationToggleButton);
+}
+
+// Initialization
+function Initialization() {
+  createPixel(8);
+  CreateControllerButtons();
 }
 
 Initialization();
