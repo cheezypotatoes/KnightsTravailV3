@@ -1,0 +1,29 @@
+#chessTiles {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr); 
+    width: 800px;
+    height: 800px; 
+    background-color: #e0e0e0;
+    border: 2px solid #222020;
+    margin: auto;
+}
+
+.tiles {
+    border:#616161fc solid thin;
+}
+
+.tilesText {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    color: red;
+    font-size: 30px;
+}
+
+.findPathButton {
+    display: flex;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
