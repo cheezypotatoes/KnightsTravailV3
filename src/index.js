@@ -1,4 +1,5 @@
 import './index.css';
+import Knight from './findShortestPath';
 
 let knightPlaced = false;
 let targetPlaced = false;
@@ -70,10 +71,49 @@ function createPixel(number) {
   }
 }
 
+function GetAllTilesConnected(tiles) {
+  // TODO: GET BY SET THEN RE ARRANGE IT ACCORDING TO THE TILES MAKING IT NOT O(n^2)
+  const pathLocations = [];
+  const allTiles = document.getElementsByClassName('tiles');
+
+  for (let j = 0; j < tiles.length; j += 1) {
+    const targetTile = tiles[j];
+
+    for (let i = 0; i < allTiles.length; i += 1) {
+      const tileElement = allTiles[i];
+
+      if (tileElement.tileCoords === targetTile) {
+        pathLocations.push(tileElement);
+        break;
+      }
+    }
+  }
+
+  return pathLocations;
+}
+
+function ColorAllPath(pathLocations) {
+  let counter = 1;
+  for (let i = 0; i < pathLocations.length; i += 1) {
+    const tile = pathLocations[i];
+    tile.style.backgroundColor = 'yellow';
+    tile.innerText = counter;
+    tile.style.color = 'blue';
+    tile.style.fontSize = '24px';
+    tile.style.textAlign = 'center';
+    tile.style.display = 'flex';
+    tile.style.justifyContent = 'center';
+    tile.style.alignItems = 'center';
+    tile.style.height = '100px';
+
+    counter += 1; // Increment the counter
+  }
+}
+
 function FindShortestPathFunction() {
   if (knightLocation !== '' && targetLocation !== '') {
-    console.log(knightLocation);
-    console.log(targetLocation);
+    const path = GetAllTilesConnected(Knight(knightLocation, targetLocation));
+    ColorAllPath(path);
   }
 }
 
@@ -100,7 +140,7 @@ function CreateControllerButtons() {
 
   ShowLocationToggleButton.addEventListener('click', () => {
     const tiles = document.getElementsByClassName('tiles');
-    const showCoordinates = !showedTilesCoord; // TODO: CANNOT UNDERSTAND HOW THIS TOGGLE WORKS
+    const showCoordinates = !showedTilesCoord;
     for (let i = 0; i < tiles.length; i += 1) {
       tiles[i].innerText = showCoordinates ? tiles[i].tileCoords : '';
     }
